@@ -13,7 +13,7 @@ const nav = [
 export function SwipeItShell({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   const path = useRouterState({ select: (state) => state.location.pathname });
   return (
-    <div className="ambient-grid relative min-h-screen overflow-x-hidden bg-background text-foreground">
+    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <div className="pointer-events-none fixed -right-28 -top-32 h-80 w-80 rounded-full bg-primary/12 blur-3xl" />
       <div className={`relative mx-auto min-h-screen pb-28 md:pb-10 ${wide ? "max-w-7xl" : "max-w-5xl"}`}>
         {children}
