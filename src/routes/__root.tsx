@@ -78,14 +78,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SwipeIt — Discover anything" },
-      { name: "description", content: "Swipez, aimez et découvrez votre prochaine obsession avec SwipeIt." },
+      { title: "SwipeIt" },
+      { name: "description", content: "Swipe. Discover. Live" },
       { name: "author", content: "SwipeIt" },
-      { property: "og:title", content: "SwipeIt — Discover anything" },
-      { property: "og:description", content: "Une nouvelle façon de découvrir musique, films, restaurants et expériences." },
+      { property: "og:title", content: "SwipeIt" },
+      { property: "og:description", content: "Swipe. Discover. Live" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@SwipeItApp" },
+      { name: "twitter:title", content: "SwipeIt" },
+      { name: "twitter:description", content: "Swipe. Discover. Live" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/lzX9k7XHYjTLiJgwlxEAfNNBI0v1/social-images/social-1781456555046-swipeit.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/lzX9k7XHYjTLiJgwlxEAfNNBI0v1/social-images/social-1781456555046-swipeit.webp" },
     ],
     links: [
       {
@@ -94,7 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@600;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -105,7 +109,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
