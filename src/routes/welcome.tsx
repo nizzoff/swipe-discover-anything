@@ -1,0 +1,11 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Bookmark, ChevronRight, Compass, Layers3 } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+export const Route = createFileRoute("/welcome")({ head: () => ({ meta: [{ title: "Bienvenue sur SwipeIt" }] }), component: WelcomePage });
+const slides = [{ icon: Compass, title: "Découvre rapidement.", text: "Sept univers. Une infinité de possibilités choisies pour vous." }, { icon: Layers3, title: "Swipe pour explorer.", text: "À gauche pour passer. À droite pour garder. C'est aussi simple que ça." }, { icon: Bookmark, title: "Sauvegarde ce que tu aimes.", text: "Retrouve chaque coup de cœur dans une collection qui te ressemble." }];
+function WelcomePage() {
+  const [step, setStep] = useState(0); const navigate = useNavigate(); const slide = slides[step]; const Icon = slide.icon;
+  return <main className="grid min-h-screen place-items-center overflow-hidden bg-background px-6 text-foreground"><div className="relative w-full max-w-md text-center"><div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-3xl" /><div className="relative"><span className="mx-auto grid h-24 w-24 place-items-center rounded-[2rem] bg-card ring-1 ring-border shadow-2xl"><Icon className="h-10 w-10 text-primary" /></span><p className="mt-10 text-xs font-bold uppercase tracking-[.25em] text-primary">SwipeIt · {step + 1}/3</p><h1 className="mt-4 text-balance font-display text-4xl font-semibold leading-tight">{slide.title}</h1><p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">{slide.text}</p><div className="mt-10 flex justify-center gap-2">{slides.map((_, index) => <i key={index} className={`h-1.5 rounded-full transition-all ${index === step ? "w-8 bg-primary" : "w-1.5 bg-muted"}`} />)}</div><Button variant="premium" size="xl" className="mt-8 w-full" onClick={() => step < 2 ? setStep((value) => value + 1) : navigate({ to: "/" })}>{step === 2 ? "Commencer" : "Continuer"}<ChevronRight /></Button></div></div></main>;
+}
