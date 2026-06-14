@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { Bell, ChevronRight, Flame, Orbit } from "lucide-react";
 import { SwipeItShell } from "@/components/swipeit-shell";
+import { PaywallGuard } from "@/components/paywall";
 import { categories } from "@/lib/swipeit-data";
 
 export const Route = createFileRoute("/")({
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
+    <PaywallGuard>
     <SwipeItShell wide>
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 pb-4 pt-8 sm:px-8 sm:pt-12">
         <div className="min-w-0"><p className="text-[10px] font-semibold uppercase tracking-[.24em] text-muted-foreground">Bonjour Baptiste</p><h1 className="mt-2 truncate font-display text-2xl font-semibold uppercase tracking-[-.07em]">SwipeIt<span className="text-primary">.</span></h1></div>
@@ -35,5 +37,6 @@ function Index() {
         <Link to="/premium" className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 overflow-hidden rounded-3xl bg-gradient-to-r from-primary/25 via-card to-card p-5 ring-1 ring-primary/30 transition hover:ring-primary/60"><div className="min-w-0"><span className="text-xs font-bold text-primary">SWIPEIT+</span><h3 className="mt-1 truncate font-display text-lg font-semibold">Débloquez la découverte sans limites</h3></div><ChevronRight className="h-5 w-5 text-primary" /></Link>
       </main>
     </SwipeItShell>
+    </PaywallGuard>
   );
 }

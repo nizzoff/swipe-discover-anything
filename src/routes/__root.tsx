@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SwipeItProvider } from "../lib/swipeit-store";
+import { AuthProvider } from "../lib/auth-provider";
 
 function NotFoundComponent() {
   return (
@@ -126,7 +127,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SwipeItProvider><Outlet /></SwipeItProvider>
+      <AuthProvider>
+        <SwipeItProvider><Outlet /></SwipeItProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Award, ChevronRight, Crown, Flame, Heart, Settings, Zap } from "lucide-react";
 import { SettingsPanel } from "@/components/settings-panel";
 import { PageHeader, SwipeItShell } from "@/components/swipeit-shell";
+import { PaywallGuard } from "@/components/paywall";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useSwipeIt } from "@/lib/swipeit-store";
@@ -9,7 +10,7 @@ import { useSwipeIt } from "@/lib/swipeit-store";
 export const Route = createFileRoute("/profile")({ head: () => ({ meta: [{ title: "Profil — SwipeIt" }] }), component: ProfilePage });
 function ProfilePage() {
   const { swipes, favorites, minutes } = useSwipeIt();
-  return <SwipeItShell><PageHeader eyebrow="Votre espace" title="Profil" action={<Sheet>
+  return <PaywallGuard><SwipeItShell><PageHeader eyebrow="Votre espace" title="Profil" action={<Sheet>
     <SheetTrigger asChild><Button variant="glass" size="icon" className="rounded-full" aria-label="Ouvrir les paramètres"><Settings /></Button></SheetTrigger>
     <SheetContent className="w-[min(92vw,26rem)] border-border bg-background/95 p-5 backdrop-blur-2xl">
       <SheetHeader className="pr-8 text-left">
@@ -25,5 +26,5 @@ function ProfilePage() {
       <section className="mt-7"><div className="mb-3 flex items-center justify-between"><h2 className="font-display text-lg font-semibold">Badges</h2><span className="text-xs text-primary">8 débloqués</span></div><div className="grid grid-cols-3 gap-3">{[[Award,"Curieux"],[Flame,"7 jours"],[Heart,"Coup de cœur"]].map(([Icon,label]) => { const BadgeIcon = Icon as typeof Award; return <div key={label as string} className="rounded-2xl bg-card p-4 text-center ring-1 ring-border"><BadgeIcon className="mx-auto h-6 w-6 text-primary" /><span className="mt-2 block text-[10px] font-semibold">{label as string}</span></div>; })}</div></section>
       <section className="mt-7 pb-5"><h2 className="mb-3 font-display text-lg font-semibold">Paramètres</h2><SettingsPanel /></section>
     </main>
-  </SwipeItShell>;
+  </SwipeItShell></PaywallGuard>;
 }
