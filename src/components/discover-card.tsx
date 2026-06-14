@@ -23,12 +23,12 @@ export function DiscoverCard({ item, onDecision, countdown }: { item: DiscoverIt
   function onUp() { setDragging(false); if (Math.abs(offset) > 90) decide(offset > 0); else setOffset(0); }
 
   return <div className="relative mx-auto w-full max-w-[430px] select-none touch-pan-y">
-    <div className="absolute inset-x-3 top-3 h-full rounded-[2rem] bg-card/45 ring-1 ring-border" />
-    <div className="absolute inset-x-6 top-6 h-full rounded-[2rem] bg-card/25 ring-1 ring-border" />
+    <div className="absolute inset-x-3 top-3 h-full rounded-[1.75rem] bg-card/45 ring-1 ring-primary/15" />
+    <div className="absolute inset-x-6 top-6 h-full rounded-[1.75rem] bg-card/25 ring-1 ring-border" />
     <div
       onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
       style={{ transform: `translateX(${offset}px) rotate(${offset / 22}deg)`, transition: dragging ? "none" : "transform 300ms cubic-bezier(.2,.8,.2,1)" }}
-      className="relative z-10 cursor-grab overflow-hidden rounded-[2rem] bg-card shadow-2xl ring-1 ring-border active:cursor-grabbing"
+      className="relative z-10 cursor-grab overflow-hidden rounded-[1.75rem] bg-card shadow-2xl ring-1 ring-border active:cursor-grabbing"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
         <img src={item.image} alt={item.title} width={1024} height={1024} className="h-full w-full object-cover" />
@@ -39,7 +39,7 @@ export function DiscoverCard({ item, onDecision, countdown }: { item: DiscoverIt
         </div>
         <div className="absolute inset-x-5 bottom-5">
           <p className="mb-2 flex items-center gap-1 text-xs font-medium text-muted-foreground"><MapPin className="h-3.5 w-3.5" /> Sélectionné pour vous</p>
-          <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight">{item.title}</h2>
+          <h2 className="text-3xl font-semibold leading-tight tracking-[-.045em]">{item.title}</h2>
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground/75">{item.description}</p>
           <div className="mt-4 flex flex-wrap gap-2">{item.tags.map((tag) => <span key={tag} className="rounded-full bg-secondary/80 px-3 py-1.5 text-xs font-medium backdrop-blur-lg">{tag}</span>)}</div>
         </div>
