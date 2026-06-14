@@ -19,6 +19,8 @@
  */
 
 @theme inline {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -42,6 +44,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -60,6 +63,15 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+
+@keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.98) } to { opacity: 1; transform: translateY(0) scale(1) } }
+@keyframes pulse-soft { 0%,100% { opacity:.45; transform:scale(.96) } 50% { opacity:1; transform:scale(1.04) } }
+@keyframes heart-pop { 0% { opacity:0; transform:scale(.4) } 35% { opacity:1; transform:scale(1.18) } 100% { opacity:0; transform:scale(1.6) } }
+
+@utility animate-rise { animation: rise .6s cubic-bezier(.2,.8,.2,1) both; }
+@utility animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+@utility animate-heart-pop { animation: heart-pop .7s ease-out both; }
+@utility glass { background: color-mix(in oklab, var(--secondary) 76%, transparent); backdrop-filter: blur(22px) saturate(135%); border: 1px solid var(--border); }
 
 :root {
   --radius: 0.625rem;
@@ -132,6 +144,23 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+:root, .dark {
+  color-scheme: dark;
+  --radius: 1.5rem;
+  --background: oklch(0.145 0 0); --foreground: oklch(0.985 0 0);
+  --card: oklch(0.22 0 0); --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.2 0 0); --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.625 0.208 255.5); --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.205 0 0); --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.25 0 0); --muted-foreground: oklch(0.69 0 0);
+  --accent: oklch(0.29 0.055 255.5); --accent-foreground: oklch(0.9 0.07 250);
+  --destructive: oklch(0.63 0.24 26); --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.72 0.19 150);
+  --success: oklch(0.72 0.19 150); --border: oklch(1 0 0 / 0.09); --input: oklch(1 0 0 / 0.12); --ring: oklch(0.7 0.16 250);
+  --chart-1: oklch(0.63 0.21 255); --chart-2: oklch(0.72 0.18 150); --chart-3: oklch(0.75 0.15 65); --chart-4: oklch(0.68 0.2 315); --chart-5: oklch(0.7 0.17 195);
+  --shadow-blue: 0 12px 44px -14px oklch(0.62 0.22 255 / 0.58);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -140,5 +169,10 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    min-width: 320px;
+    margin: 0;
   }
 }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
