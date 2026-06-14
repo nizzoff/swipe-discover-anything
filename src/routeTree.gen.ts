@@ -9,11 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SwipeCategoryRouteImport } from './routes/swipe.$category'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatsRoute = StatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -22,6 +37,21 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritesRoute = FavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,40 +67,102 @@ const SwipeCategoryRoute = SwipeCategoryRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRoute
+  '/premium': typeof PremiumRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/stats': typeof StatsRoute
+  '/welcome': typeof WelcomeRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRoute
+  '/premium': typeof PremiumRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/stats': typeof StatsRoute
+  '/welcome': typeof WelcomeRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRoute
+  '/premium': typeof PremiumRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/stats': typeof StatsRoute
+  '/welcome': typeof WelcomeRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/search' | '/sitemap.xml' | '/swipe/$category'
+  fullPaths:
+    | '/'
+    | '/favorites'
+    | '/premium'
+    | '/profile'
+    | '/search'
+    | '/sitemap.xml'
+    | '/stats'
+    | '/welcome'
+    | '/swipe/$category'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search' | '/sitemap.xml' | '/swipe/$category'
-  id: '__root__' | '/' | '/search' | '/sitemap.xml' | '/swipe/$category'
+  to:
+    | '/'
+    | '/favorites'
+    | '/premium'
+    | '/profile'
+    | '/search'
+    | '/sitemap.xml'
+    | '/stats'
+    | '/welcome'
+    | '/swipe/$category'
+  id:
+    | '__root__'
+    | '/'
+    | '/favorites'
+    | '/premium'
+    | '/profile'
+    | '/search'
+    | '/sitemap.xml'
+    | '/stats'
+    | '/welcome'
+    | '/swipe/$category'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FavoritesRoute: typeof FavoritesRoute
+  PremiumRoute: typeof PremiumRoute
+  ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StatsRoute: typeof StatsRoute
+  WelcomeRoute: typeof WelcomeRoute
   SwipeCategoryRoute: typeof SwipeCategoryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stats': {
+      id: '/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -83,6 +175,27 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -104,8 +217,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FavoritesRoute: FavoritesRoute,
+  PremiumRoute: PremiumRoute,
+  ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StatsRoute: StatsRoute,
+  WelcomeRoute: WelcomeRoute,
   SwipeCategoryRoute: SwipeCategoryRoute,
 }
 export const routeTree = rootRouteImport
