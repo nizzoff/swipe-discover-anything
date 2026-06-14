@@ -24,7 +24,7 @@ function SwipePage() {
     return () => window.clearInterval(timer);
   }, [current.id, index]);
 
-  return <main className="ambient-grid relative min-h-screen overflow-hidden bg-background px-4 pb-8 pt-5 text-foreground before:pointer-events-none before:absolute before:-right-24 before:-top-24 before:h-72 before:w-72 before:rounded-full before:bg-primary/15 before:blur-3xl">
+  return <main className="relative min-h-screen overflow-hidden bg-background px-4 pb-8 pt-5 text-foreground before:pointer-events-none before:absolute before:-right-24 before:-top-24 before:h-72 before:w-72 before:rounded-full before:bg-primary/15 before:blur-3xl">
     <header className="mx-auto grid max-w-3xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 pb-5">
       <Button asChild variant="glass" size="icon" className="rounded-full"><Link to="/"><ArrowLeft /></Link></Button>
       <div className="min-w-0 text-center"><p className="text-[9px] font-bold uppercase tracking-[.24em] text-primary">{meta.eyebrow}</p><h1 className="truncate font-display text-sm font-semibold uppercase tracking-[-.04em]">{meta.label}</h1></div>
