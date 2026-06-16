@@ -95,7 +95,7 @@ export function useSubscription(): SubscriptionInfo & {
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkout = async (planType: PlanType): Promise<string | null> => {
+  const checkout = async (planType: PlanType, promoCode?: string): Promise<string | null> => {
     try {
       const {
         data: { session },
@@ -119,7 +119,7 @@ export function useSubscription(): SubscriptionInfo & {
           "Content-Type": "application/json",
           Authorization: `Bearer ${currentSession?.access_token}`,
         },
-        body: JSON.stringify({ planType }),
+        body: JSON.stringify({ planType, promoCode }),
       });
 
       if (!res.ok) {
@@ -140,4 +140,22 @@ export function useSubscription(): SubscriptionInfo & {
     checkout,
     refresh: fetchSubscription,
   };
+}
+
+export async function validatePromoCode(
+  code: string,
+  planType?: PlanType
+): Promise<{ valid: boolean; discount?: number; discountType?: "percent" | "amount"; message?: string; error?: string }> {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/validate-promo`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, planType }),
+    });
+
+    const data = await res.json();
+    return data;
+  } catch {
+    return { valid: false, error: "Erreur de validation" };
+  }
 }

@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SwipeItProvider } from "../lib/swipeit-store";
 import { AuthProvider } from "../lib/auth-provider";
+import { ThemeProvider } from "../lib/theme-provider";
 
 function NotFoundComponent() {
   return (
@@ -127,9 +128,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <SwipeItProvider><Outlet /></SwipeItProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <SwipeItProvider><Outlet /></SwipeItProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

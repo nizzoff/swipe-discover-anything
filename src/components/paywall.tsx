@@ -1,10 +1,9 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Crown, Loader as Loader2 } from "lucide-react";
+import { Crown, Loader as Loader2, Tag, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useSubscription, type PlanType } from "@/lib/use-subscription";
+import { useSubscription, validatePromoCode, type PlanType } from "@/lib/use-subscription";
 
-const plans: { id: PlanType; name: string; price: string; period: string; badge?: string; features: string[] }[] = [
+const plans: { id: PlanType; name: string; price: string; period: string; badge?: string; features: string[]; popular?: boolean }[] = [
   {
     id: "monthly",
     name: "Mensuel",
@@ -19,6 +18,7 @@ const plans: { id: PlanType; name: string; price: string; period: string; badge?
     period: "/ an",
     badge: "2 mois offerts",
     features: ["Accès complet", "14 jours d'essai gratuit", "Économisez 10 €", "Support prioritaire"],
+    popular: true,
   },
   {
     id: "lifetime",
@@ -34,14 +34,19 @@ export function Paywall() {
   const { checkout, hasAccess, accessReason, loading } = useSubscription();
   const [processingPlan, setProcessingPlan] = useState<PlanType | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [promoCode, setPromoCode] = useState("");
+  const [promoStatus, setPromoStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
+  const [promoData, setPromoData] = useState<{ discount: number; discountType: "percent" | "amount"; message: string } | null>(null);
 
   if (loading) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
-        <div className="text-center">
-          <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
-          <p className="mt-4 text-sm text-muted-foreground">Vérification de votre abonnement...</p>
+        <div className="text-center animate-fade-in">
+          <div className="relative">
+            <div className="absolute inset-0 animate-pulse-soft rounded-full bg-primary/20 blur-xl" />
+            <Loader2 className="relative mx-auto h-10 w-10 animate-spin text-primary" />
+          </div>
+          <p className="mt-6 text-sm text-muted-foreground">Vérification de votre abonnement...</p>
         </div>
       </div>
     );
@@ -49,12 +54,29 @@ export function Paywall() {
 
   if (hasAccess) return null;
 
+  const handlePromoCheck = async () => {
+    if (!promoCode.trim()) return;
+
+    setPromoStatus("checking");
+    const result = await validatePromoCode(promoCode.trim());
+
+    if (result.valid) {
+      setPromoStatus("valid");
+      setPromoData({ discount: result.discount!, discountType: result.discountType!, message: result.message! });
+    } else {
+      setPromoStatus("invalid");
+      setError(result.error || "Code invalide");
+      setPromoData(null);
+    }
+  };
+
   const handleSubscribe = async (planType: PlanType) => {
     setProcessingPlan(planType);
     setError(null);
 
     try {
-      const url = await checkout(planType);
+      const code = promoStatus === "valid" ? promoCode.trim() : undefined;
+      const url = await checkout(planType, code);
       if (url) {
         window.location.href = url;
       }
@@ -65,73 +87,138 @@ export function Paywall() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background px-4 pb-8 pt-6 text-foreground">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[400px] bg-[radial-gradient(circle_at_50%_0%,var(--primary),transparent_60%)] opacity-20" />
+    <div className="relative min-h-screen overflow-hidden bg-background px-4 pb-8 pt-8 text-foreground">
+      {/* Background effects */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[500px] bg-gradient-to-b from-primary/8 via-transparent to-transparent" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/12 blur-[100px]" />
+      <div className="pointer-events-none absolute right-0 top-1/3 h-52 w-52 rounded-full bg-purple-500/6 blur-[80px]" />
 
       <div className="relative mx-auto max-w-lg">
-        <div className="text-center">
-          <span className="mx-auto grid h-16 w-16 place-items-center rounded-[1.25rem] bg-primary text-primary-foreground shadow-[var(--shadow-blue)]">
-            <Crown className="h-8 w-8" />
-          </span>
-          <h1 className="mt-6 font-display text-3xl font-semibold uppercase tracking-[-.05em]">
+        {/* Hero */}
+        <div className="text-center animate-slide-up">
+          <div className="relative mx-auto inline-block">
+            <div className="absolute inset-0 animate-glow rounded-[1.75rem]" />
+            <span className="relative grid h-18 w-18 place-items-center rounded-[1.35rem] bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-lg">
+              <Crown className="h-8 w-8" />
+            </span>
+          </div>
+          <h2 className="mt-6 font-display text-3xl font-bold tracking-tight">
             SwipeIt<span className="text-primary">+</span>
-          </h1>
-          <p className="mt-3 text-sm text-muted-foreground">
+          </h2>
+          <p className="mt-3 text-sm text-muted-foreground max-w-xs mx-auto">
             {accessReason === "payment_failed"
               ? "Le paiement n'a pas abouti. Veuillez réessayer."
               : accessReason === "canceled"
-                ? "Votre abonnement a été annulé. Réabonnez-vous pour continuer."
+                ? "Votre abonnement a été annulé. Réabonnez-vous."
                 : "Débloquez l'accès complet à SwipeIt"}
           </p>
         </div>
 
+        {/* Promo code */}
+        <div className="mt-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+          <div className="glass-subtle rounded-xl p-3">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  value={promoCode}
+                  onChange={(e) => {
+                    setPromoCode(e.target.value.toUpperCase());
+                    setPromoStatus("idle");
+                    setPromoData(null);
+                    setError(null);
+                  }}
+                  placeholder="Code promo"
+                  className="w-full rounded-lg border border-input/50 bg-background/80 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
+                />
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePromoCheck}
+                disabled={!promoCode.trim() || promoStatus === "checking"}
+                className="shrink-0 px-4"
+              >
+                {promoStatus === "checking" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Appliquer"
+                )}
+              </Button>
+            </div>
+            {promoStatus === "valid" && promoData && (
+              <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-success">
+                <Sparkles className="h-3 w-3" />
+                {promoData.message} appliqué
+              </p>
+            )}
+          </div>
+        </div>
+
         {error && (
-          <div className="mt-4 rounded-xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+          <div className="mt-4 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive animate-scale-in">
             {error}
           </div>
         )}
 
-        <div className="mt-8 space-y-4">
-          {plans.map((plan) => (
+        {/* Plans */}
+        <div className="mt-6 space-y-3">
+          {plans.map((plan, index) => (
             <button
               key={plan.id}
               onClick={() => handleSubscribe(plan.id)}
               disabled={processingPlan !== null}
-              className="relative w-full rounded-[1.5rem] bg-card p-5 text-left ring-1 ring-border transition hover:border-primary/40 hover:shadow-lg disabled:opacity-50"
+              className={`relative w-full rounded-2xl p-5 text-left transition-all duration-300 disabled:opacity-50 ${
+                plan.popular
+                  ? "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent ring-1 ring-primary/30 hover:ring-primary/50"
+                  : "glass-subtle hover:border-primary/30"
+              }`}
+              style={{ animationDelay: `${0.15 + index * 0.05}s` }}
             >
+              {promoStatus === "valid" && promoData && (
+                <span className="absolute left-4 top-4 rounded-md bg-success/15 px-2 py-0.5 text-[10px] font-bold text-success">
+                  -{promoData.discountType === "percent" ? `${promoData.discount}%` : `${promoData.discount / 100}€`}
+                </span>
+              )}
               {plan.badge && (
-                <span className="absolute right-4 top-4 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+                <span className="absolute right-4 top-4 rounded-md bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary-foreground">
                   {plan.badge}
                 </span>
               )}
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-4 pt-6">
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-display text-lg font-semibold">{plan.name}</h3>
-                  <div className="mt-1">
+                  <h3 className="font-display text-lg font-bold">{plan.name}</h3>
+                  <div className="mt-1.5 flex items-baseline gap-1">
                     <span className="font-display text-2xl font-bold">{plan.price}</span>
                     <span className="text-sm text-muted-foreground">{plan.period}</span>
                   </div>
-                  <ul className="mt-3 space-y-1">
+                  <ul className="mt-4 space-y-1.5">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="h-1 w-1 rounded-full bg-primary" />
+                        <span className="h-1 w-1 shrink-0 rounded-full bg-primary" />
                         {feature}
                       </li>
                     ))}
                   </ul>
                 </div>
-                {processingPlan === plan.id ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                ) : (
-                  <Crown className="h-5 w-5 text-primary" />
-                )}
+                <div className="grid shrink-0 place-items-center">
+                  {processingPlan === plan.id ? (
+                    <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10">
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    </div>
+                  ) : (
+                    <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 transition group-hover:bg-primary group-hover:text-primary-foreground">
+                      <Crown className="h-5 w-5 text-primary" />
+                    </div>
+                  )}
+                </div>
               </div>
             </button>
           ))}
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          Paiement sécurisé par Stripe. Annulable à tout moment.
+          14 jours d'essai gratuit. Paiement sécurisé par Stripe.
         </p>
       </div>
     </div>
@@ -139,14 +226,17 @@ export function Paywall() {
 }
 
 export function PaywallGuard({ children }: { children: React.ReactNode }) {
-  const { hasAccess, loading, accessReason } = useSubscription();
+  const { hasAccess, loading } = useSubscription();
 
   if (loading) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <div className="text-center">
-          <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
-          <p className="mt-4 text-sm text-muted-foreground">Chargement...</p>
+          <div className="relative">
+            <div className="absolute inset-0 animate-pulse-soft rounded-full bg-primary/20 blur-xl" />
+            <Loader2 className="relative mx-auto h-10 w-10 animate-spin text-primary" />
+          </div>
+          <p className="mt-6 text-sm text-muted-foreground">Chargement...</p>
         </div>
       </div>
     );

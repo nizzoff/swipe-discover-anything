@@ -8,8 +8,9 @@ const corsHeaders = {
 };
 
 interface CheckoutRequest {
-  priceId: string;
+  priceId?: string;
   planType: "monthly" | "annual" | "lifetime";
+  promoCode?: string;
   successUrl?: string;
   cancelUrl?: string;
 }
@@ -59,7 +60,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const body: CheckoutRequest = await req.json();
-    const { planType, successUrl, cancelUrl } = body;
+    const { planType, promoCode, successUrl, cancelUrl } = body;
 
     const priceId = STRIPE_PRICES[planType];
     if (!priceId) {
@@ -67,6 +68,52 @@ Deno.serve(async (req: Request) => {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Validate promo code if provided
+    let promoCodeData: { id: string; discount_percent: number; discount_amount_cents: number } | null = null;
+    let stripeCouponId: string | null = null;
+
+    if (promoCode) {
+      const { data: promo, error: promoError } = await supabase
+        .from("promo_codes")
+        .select("id, discount_percent, discount_amount_cents, plan_type, max_uses, uses_count, expires_at, is_active")
+        .eq("code", promoCode.toUpperCase())
+        .single();
+
+      if (promo && !promoError) {
+        // Check if promo code is valid
+        const isValid = promo.is_active &&
+          (promo.max_uses === null || promo.uses_count < promo.max_uses) &&
+          (promo.expires_at === null || new Date(promo.expires_at) > new Date()) &&
+          (promo.plan_type === null || promo.plan_type === planType);
+
+        if (isValid) {
+          promoCodeData = promo;
+
+          // Create or get Stripe coupon
+          if (promo.discount_percent) {
+            // Create a coupon for this checkout
+            const couponRes = await fetch("https://api.stripe.com/v1/coupons", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams({
+                "percent_off": promo.discount_percent.toString(),
+                "duration": "once",
+                "metadata[promo_code_id]": promo.id,
+              }),
+            });
+
+            if (couponRes.ok) {
+              const coupon = await couponRes.json();
+              stripeCouponId = coupon.id;
+            }
+          }
+        }
+      }
     }
 
     // Get or create subscription record
@@ -116,12 +163,25 @@ Deno.serve(async (req: Request) => {
       "line_items[0][quantity]": "1",
       success_url: successUrl || `${origin}/premium?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${origin}/premium?canceled=true`,
-      metadata: JSON.stringify({ user_id: user.id, plan_type: planType }),
+      metadata: JSON.stringify({
+        user_id: user.id,
+        plan_type: planType,
+        promo_code_id: promoCodeData?.id || null,
+      }),
     });
 
     // Add trial for first-time subscribers (14 days)
     if (planType !== "lifetime" && !existingSub?.trial_ends_at) {
       sessionParams.set("subscription_data[trial_period_days]", "14");
+    }
+
+    // Apply coupon if valid
+    if (stripeCouponId) {
+      if (planType === "lifetime") {
+        sessionParams.set("discounts[0][coupon]", stripeCouponId);
+      } else {
+        sessionParams.set("subscription_data[coupon]", stripeCouponId);
+      }
     }
 
     const sessionRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
@@ -150,7 +210,19 @@ Deno.serve(async (req: Request) => {
       trial_ends_at: trialEnd.toISOString(),
     }, { onConflict: "user_id" });
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    // Increment promo code usage if used
+    if (promoCodeData) {
+      await supabase
+        .from("promo_codes")
+        .update({ uses_count: (existingSub?.uses_count || 0) + 1 })
+        .eq("id", promoCodeData.id);
+    }
+
+    return new Response(JSON.stringify({
+      url: session.url,
+      promoApplied: !!promoCodeData,
+      discount: promoCodeData?.discount_percent || promoCodeData?.discount_amount_cents,
+    }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
