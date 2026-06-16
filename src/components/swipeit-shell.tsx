@@ -1,10 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, Heart, Home, Search, User } from "lucide-react";
+import { ChartBar as BarChart3, Heart, Hop as Home, User } from "lucide-react";
 import type { ReactNode } from "react";
 
 const nav = [
   { to: "/", label: "Accueil", icon: Home },
-  { to: "/search", label: "Recherche", icon: Search },
   { to: "/favorites", label: "Favoris", icon: Heart },
   { to: "/stats", label: "Stats", icon: BarChart3 },
   { to: "/profile", label: "Profil", icon: User },

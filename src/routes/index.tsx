@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
-import { ChevronRight, Crown, Flame, Orbit } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ChevronRight, Crown, Flame, Orbit, Search } from "lucide-react";
 import { SwipeItShell } from "@/components/swipeit-shell";
 import { PaywallGuard } from "@/components/paywall";
 import { categories } from "@/lib/swipeit-data";
@@ -21,7 +20,7 @@ function Index() {
   return (
     <PaywallGuard>
       <SwipeItShell wide>
-        {/* Header */}
+        {/* Header with search */}
         <header className="flex items-center justify-between gap-4 px-5 pb-4 pt-8 sm:px-8 sm:pt-12">
           <div className="min-w-0 animate-slide-up">
             <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
@@ -31,10 +30,19 @@ function Index() {
               SwipeIt<span className="text-primary">.</span>
             </h1>
           </div>
-          <span className="glass-subtle flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-bold animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            <Flame className="h-4 w-4 fill-primary text-primary" />
-            <span className="text-primary">7</span>
-          </span>
+          <div className="flex shrink-0 items-center gap-2 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+            <Link
+              to="/search"
+              className="glass-subtle grid h-10 w-10 place-items-center rounded-xl transition hover:border-primary/30"
+              aria-label="Rechercher"
+            >
+              <Search className="h-5 w-5" />
+            </Link>
+            <span className="glass-subtle flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold">
+              <Flame className="h-4 w-4 fill-primary text-primary" />
+              <span className="text-primary">7</span>
+            </span>
+          </div>
         </header>
 
         <main className="px-5 sm:px-8">
