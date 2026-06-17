@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChartBar as BarChart3, Heart, Hop as Home, User } from "lucide-react";
+import { ChartBar, Heart, Home, User } from "lucide-react";
 import type { ReactNode } from "react";
 
 const nav = [
   { to: "/", label: "Accueil", icon: Home },
   { to: "/favorites", label: "Favoris", icon: Heart },
-  { to: "/stats", label: "Stats", icon: BarChart3 },
+  { to: "/stats", label: "Stats", icon: ChartBar },
   { to: "/profile", label: "Profil", icon: User },
 ] as const;
 
@@ -44,9 +44,7 @@ export function SwipeItShell({ children, wide = false }: { children: ReactNode; 
               )}
               <div className="relative z-10 flex flex-col items-center gap-0.5">
                 <Icon
-                  className={`h-5 w-5 transition-transform duration-300 group-active:scale-90 ${
-                    active ? "glow-primary" : ""
-                  }`}
+                  className={`h-5 w-5 transition-transform duration-300 group-active:scale-90`}
                 />
                 <span className="truncate">{label}</span>
               </div>
