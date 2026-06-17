@@ -21,7 +21,7 @@ export function SettingsPanel() {
           </span>
           <span className="text-sm font-semibold">Theme</span>
         </div>
-        <div className="grid grid-cols-5 gap-2 p-3">
+        <div className="grid grid-cols-4 gap-2 p-3">
           {themes.map((t) => (
             <button
               key={t.id}
