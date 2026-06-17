@@ -218,9 +218,7 @@
     margin: 0;
     letter-spacing: -0.01em;
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.78 0.16 210 / 0.12), transparent),
-      radial-gradient(ellipse 60% 40% at 100% 50%, oklch(0.7 0.12 195 / 0.06), transparent),
-      radial-gradient(ellipse 50% 30% at 0% 80%, oklch(0.75 0.1 280 / 0.04), transparent);
+      radial-gradient(ellipse 70% 40% at 50% -10%, color-mix(in oklab, var(--primary) 10%, transparent), transparent);
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -316,4 +314,28 @@
   --accent: oklch(0.2 0.04 275);
   --shadow-blue: 0 20px 60px -16px oklch(0.55 0.12 270 / 0.4);
   --shadow-glow: 0 0 30px oklch(0.55 0.12 270 / 0.25);
+}
+
+[data-theme="rose"] {
+  --background: oklch(0.08 0.015 350);
+  --card: oklch(0.12 0.02 350);
+  --primary: oklch(0.72 0.18 350);
+  --primary-foreground: oklch(0.08 0.02 350);
+  --secondary: oklch(0.15 0.02 350);
+  --muted: oklch(0.18 0.02 350);
+  --accent: oklch(0.22 0.05 350);
+  --shadow-blue: 0 20px 60px -16px oklch(0.72 0.18 350 / 0.4);
+  --shadow-glow: 0 0 30px oklch(0.72 0.18 350 / 0.25);
+}
+
+[data-theme="mono"] {
+  --background: oklch(0.09 0.003 250);
+  --card: oklch(0.13 0.004 250);
+  --primary: oklch(0.92 0.005 250);
+  --primary-foreground: oklch(0.1 0.005 250);
+  --secondary: oklch(0.16 0.004 250);
+  --muted: oklch(0.19 0.004 250);
+  --accent: oklch(0.24 0.005 250);
+  --shadow-blue: 0 20px 60px -16px oklch(0 0 0 / 0.5);
+  --shadow-glow: 0 0 30px oklch(0.92 0.005 250 / 0.18);
 }
