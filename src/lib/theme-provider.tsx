@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-export type Theme = "dark" | "ocean" | "sunset" | "forest" | "midnight";
+export type Theme = "dark" | "ocean" | "sunset" | "forest" | "midnight" | "rose" | "mono";
 export type ThemeOption = { id: Theme; name: string; color: string };
 
 export const themes: ThemeOption[] = [
@@ -9,6 +9,8 @@ export const themes: ThemeOption[] = [
   { id: "sunset", name: "Sunset", color: "oklch(0.7 0.2 25)" },
   { id: "forest", name: "Forest", color: "oklch(0.7 0.15 150)" },
   { id: "midnight", name: "Midnight", color: "oklch(0.55 0.12 270)" },
+  { id: "rose", name: "Rose", color: "oklch(0.72 0.18 350)" },
+  { id: "mono", name: "Mono", color: "oklch(0.85 0.005 250)" },
 ];
 
 interface ThemeValue {
