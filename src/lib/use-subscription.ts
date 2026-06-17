@@ -28,7 +28,7 @@ interface SubscriptionInfo {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
 export function useSubscription(): SubscriptionInfo & {
-  checkout: (planType: PlanType) => Promise<string | null>;
+  checkout: (planType: PlanType, promoCode?: string) => Promise<string | null>;
   refresh: () => Promise<void>;
 } {
   const [state, setState] = useState<SubscriptionInfo>({
