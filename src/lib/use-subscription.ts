@@ -8,6 +8,7 @@ export type AccessReason =
   | "trial"
   | "active_subscription"
   | "lifetime"
+  | "promo"
   | "payment_failed"
   | "canceled";
 
