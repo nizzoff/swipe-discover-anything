@@ -19,6 +19,25 @@ export const Route = createFileRoute("/admin/promo-codes")({
 
 type Tier = "premium" | "premium_plus" | "beta";
 
+type CreateInput = {
+  name?: string | null;
+  code?: string | null;
+  accessTier: Tier;
+  maxUses?: number | null;
+  expiresAt?: string | null;
+  durationDays?: number | null;
+};
+
+type UpdateInput = {
+  id: string;
+  name?: string | null;
+  isActive?: boolean;
+  maxUses?: number | null;
+  expiresAt?: string | null;
+  durationDays?: number | null;
+  accessTier?: Tier;
+};
+
 function AdminPromoCodesPage() {
   const checkAdmin = useServerFn(isAdmin);
   const adminQ = useQuery({ queryKey: ["isAdmin"], queryFn: () => checkAdmin() });
@@ -62,13 +81,11 @@ function AdminPanel() {
   const invalidate = () => qc.invalidateQueries({ queryKey: ["promo-codes"] });
 
   const createM = useMutation({
-    mutationFn: (input: Parameters<typeof createPromoCode>[0]["data"]) =>
-      createFn({ data: input }),
+    mutationFn: (input: CreateInput) => createFn({ data: input }),
     onSuccess: invalidate,
   });
   const updateM = useMutation({
-    mutationFn: (input: Parameters<typeof updatePromoCode>[0]["data"]) =>
-      updateFn({ data: input }),
+    mutationFn: (input: UpdateInput) => updateFn({ data: input }),
     onSuccess: invalidate,
   });
   const deleteM = useMutation({
