@@ -14,16 +14,130 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      promo_codes: {
+        Row: {
+          access_tier: Database["public"]["Enums"]["access_tier"]
+          code: string
+          created_at: string
+          created_by: string | null
+          duration_days: number | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          name: string | null
+          updated_at: string
+          uses_count: number
+        }
+        Insert: {
+          access_tier?: Database["public"]["Enums"]["access_tier"]
+          code: string
+          created_at?: string
+          created_by?: string | null
+          duration_days?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          name?: string | null
+          updated_at?: string
+          uses_count?: number
+        }
+        Update: {
+          access_tier?: Database["public"]["Enums"]["access_tier"]
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          duration_days?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          name?: string | null
+          updated_at?: string
+          uses_count?: number
+        }
+        Relationships: []
+      }
+      promo_redemptions: {
+        Row: {
+          access_tier: Database["public"]["Enums"]["access_tier"]
+          created_at: string
+          expires_at: string | null
+          id: string
+          promo_code_id: string
+          user_id: string
+        }
+        Insert: {
+          access_tier?: Database["public"]["Enums"]["access_tier"]
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          promo_code_id: string
+          user_id: string
+        }
+        Update: {
+          access_tier?: Database["public"]["Enums"]["access_tier"]
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          promo_code_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_redemptions_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      user_active_promo: {
+        Args: { _user_id: string }
+        Returns: {
+          expires_at: string
+          tier: Database["public"]["Enums"]["access_tier"]
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      access_tier: "premium" | "premium_plus" | "beta"
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +264,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      access_tier: ["premium", "premium_plus", "beta"],
+      app_role: ["admin", "user"],
+    },
   },
 } as const
