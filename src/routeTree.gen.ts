@@ -16,8 +16,10 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as FavoritesRouteImport } from './routes/favorites'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SwipeCategoryRouteImport } from './routes/swipe.$category'
+import { Route as AdminPromoCodesRouteImport } from './routes/admin.promo-codes'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -54,6 +56,11 @@ const FavoritesRoute = FavoritesRouteImport.update({
   path: '/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -64,9 +71,15 @@ const SwipeCategoryRoute = SwipeCategoryRouteImport.update({
   path: '/swipe/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPromoCodesRoute = AdminPromoCodesRouteImport.update({
+  id: '/admin/promo-codes',
+  path: '/admin/promo-codes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
@@ -74,10 +87,12 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/promo-codes': typeof AdminPromoCodesRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
@@ -85,11 +100,13 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/promo-codes': typeof AdminPromoCodesRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
@@ -97,12 +114,14 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
+  '/admin/promo-codes': typeof AdminPromoCodesRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/favorites'
     | '/premium'
     | '/profile'
@@ -110,10 +129,12 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stats'
     | '/welcome'
+    | '/admin/promo-codes'
     | '/swipe/$category'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/favorites'
     | '/premium'
     | '/profile'
@@ -121,10 +142,12 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stats'
     | '/welcome'
+    | '/admin/promo-codes'
     | '/swipe/$category'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/favorites'
     | '/premium'
     | '/profile'
@@ -132,11 +155,13 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stats'
     | '/welcome'
+    | '/admin/promo-codes'
     | '/swipe/$category'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   FavoritesRoute: typeof FavoritesRoute
   PremiumRoute: typeof PremiumRoute
   ProfileRoute: typeof ProfileRoute
@@ -144,6 +169,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StatsRoute: typeof StatsRoute
   WelcomeRoute: typeof WelcomeRoute
+  AdminPromoCodesRoute: typeof AdminPromoCodesRoute
   SwipeCategoryRoute: typeof SwipeCategoryRoute
 }
 
@@ -198,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -212,11 +245,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SwipeCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/promo-codes': {
+      id: '/admin/promo-codes'
+      path: '/admin/promo-codes'
+      fullPath: '/admin/promo-codes'
+      preLoaderRoute: typeof AdminPromoCodesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   FavoritesRoute: FavoritesRoute,
   PremiumRoute: PremiumRoute,
   ProfileRoute: ProfileRoute,
@@ -224,18 +265,9 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StatsRoute: StatsRoute,
   WelcomeRoute: WelcomeRoute,
+  AdminPromoCodesRoute: AdminPromoCodesRoute,
   SwipeCategoryRoute: SwipeCategoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

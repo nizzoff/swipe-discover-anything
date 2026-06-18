@@ -1,6 +1,12 @@
-import { Bell, Check, Globe2, Moon } from "lucide-react";
+import { Bell, Check, Globe2, Moon, Shield, LogOut, LogIn } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Switch } from "@/components/ui/switch";
 import { themes, useTheme, type Theme } from "@/lib/theme-provider";
+import { isAdmin } from "@/lib/promo.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 const languages = [
   { code: "fr", name: "Français" },
@@ -10,6 +16,19 @@ const languages = [
 
 export function SettingsPanel() {
   const { theme, setTheme } = useTheme();
+  const checkAdmin = useServerFn(isAdmin);
+  const [authed, setAuthed] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setAuthed(Boolean(data.session)));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(Boolean(s)));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+  const adminQ = useQuery({
+    queryKey: ["isAdmin"],
+    queryFn: () => checkAdmin(),
+    enabled: authed,
+    retry: false,
+  });
 
   return (
     <div className="space-y-4">
@@ -74,6 +93,42 @@ export function SettingsPanel() {
             ))}
           </select>
         </div>
+      </section>
+
+      {/* Account */}
+      <section className="overflow-hidden rounded-xl bg-card/60 ring-1 ring-border/50">
+        {authed ? (
+          <button
+            onClick={() => supabase.auth.signOut()}
+            className="flex w-full items-center gap-3 p-3 text-sm font-semibold hover:bg-secondary/50"
+          >
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
+              <LogOut className="h-4 w-4" />
+            </span>
+            Se déconnecter
+          </button>
+        ) : (
+          <Link
+            to="/auth"
+            className="flex w-full items-center gap-3 p-3 text-sm font-semibold hover:bg-secondary/50"
+          >
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
+              <LogIn className="h-4 w-4" />
+            </span>
+            Se connecter
+          </Link>
+        )}
+        {adminQ.data?.isAdmin && (
+          <Link
+            to="/admin/promo-codes"
+            className="flex w-full items-center gap-3 border-t border-border/50 p-3 text-sm font-semibold hover:bg-secondary/50"
+          >
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
+              <Shield className="h-4 w-4" />
+            </span>
+            Gérer les codes promo
+          </Link>
+        )}
       </section>
     </div>
   );

@@ -1,7 +1,10 @@
-import { Crown, Loader as Loader2, Tag, Sparkles } from "lucide-react";
+import { Crown, Loader as Loader2, Tag, Sparkles, KeyRound } from "lucide-react";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { useSubscription, validatePromoCode, type PlanType } from "@/lib/use-subscription";
+import { redeemPromoCode } from "@/lib/promo.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 const plans: { id: PlanType; name: string; price: string; period: string; badge?: string; features: string[]; popular?: boolean }[] = [
   {
@@ -31,12 +34,17 @@ const plans: { id: PlanType; name: string; price: string; period: string; badge?
 ];
 
 export function Paywall() {
-  const { checkout, hasAccess, accessReason, loading } = useSubscription();
+  const { checkout, hasAccess, accessReason, loading, refresh } = useSubscription();
   const [processingPlan, setProcessingPlan] = useState<PlanType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [promoCode, setPromoCode] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
   const [promoData, setPromoData] = useState<{ discount: number; discountType: "percent" | "amount"; message: string } | null>(null);
+  const [accessCode, setAccessCode] = useState("");
+  const [redeeming, setRedeeming] = useState(false);
+  const [redeemError, setRedeemError] = useState<string | null>(null);
+  const [redeemSuccess, setRedeemSuccess] = useState<string | null>(null);
+  const redeem = useServerFn(redeemPromoCode);
 
   if (loading) {
     return (
@@ -53,6 +61,30 @@ export function Paywall() {
   }
 
   if (hasAccess) return null;
+
+  const handleRedeem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessCode.trim()) return;
+    setRedeeming(true);
+    setRedeemError(null);
+    setRedeemSuccess(null);
+    try {
+      // Ensure the user has a session so the redemption is bound to an account
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        const { error: sErr } = await supabase.auth.signInAnonymously();
+        if (sErr) throw new Error("Impossible d'initialiser la session");
+      }
+      const result = await redeem({ data: { code: accessCode.trim() } });
+      setRedeemSuccess(`Accès ${result.tier} activé !`);
+      setAccessCode("");
+      await refresh();
+    } catch (err) {
+      setRedeemError(err instanceof Error ? err.message : "Code invalide");
+    } finally {
+      setRedeeming(false);
+    }
+  };
 
   const handlePromoCheck = async () => {
     if (!promoCode.trim()) return;
@@ -115,7 +147,47 @@ export function Paywall() {
         </div>
 
         {/* Promo code */}
-        <div className="mt-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+        {/* Access code (grants Premium without payment) */}
+        <form onSubmit={handleRedeem} className="mt-8 animate-slide-up" style={{ animationDelay: "0.05s" }}>
+          <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 ring-1 ring-primary/30">
+            <div className="mb-3 flex items-center gap-2">
+              <KeyRound className="h-4 w-4 text-primary" />
+              <h3 className="text-sm font-bold">J'ai un code d'accès</h3>
+            </div>
+            <div className="flex gap-2">
+              <input
+                value={accessCode}
+                onChange={(e) => {
+                  setAccessCode(e.target.value.toUpperCase());
+                  setRedeemError(null);
+                  setRedeemSuccess(null);
+                }}
+                placeholder="SWIPEITVIP"
+                className="w-full flex-1 rounded-lg border border-input/50 bg-background/80 px-3 py-2.5 text-sm font-mono tracking-widest outline-none transition focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
+              />
+              <Button type="submit" disabled={!accessCode.trim() || redeeming} className="shrink-0">
+                {redeeming ? <Loader2 className="h-4 w-4 animate-spin" /> : "Activer"}
+              </Button>
+            </div>
+            {redeemError && (
+              <p className="mt-2 text-xs font-medium text-destructive">{redeemError}</p>
+            )}
+            {redeemSuccess && (
+              <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-success">
+                <Sparkles className="h-3 w-3" /> {redeemSuccess}
+              </p>
+            )}
+          </div>
+        </form>
+
+        <div className="mt-6 flex items-center gap-3 text-[10px] uppercase tracking-widest text-muted-foreground">
+          <div className="h-px flex-1 bg-border" />
+          ou abonnez-vous
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        {/* Stripe promo discount */}
+        <div className="mt-4 animate-slide-up" style={{ animationDelay: "0.1s" }}>
           <div className="glass-subtle rounded-xl p-3">
             <div className="flex gap-2">
               <div className="relative flex-1">
