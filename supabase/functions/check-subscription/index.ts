@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
       .from("subscriptions")
       .select("*")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (error && error.code !== "PGRST116") {
       throw error;
@@ -81,6 +81,16 @@ Deno.serve(async (req: Request) => {
       } else if (isCanceled) {
         hasAccess = false;
         accessReason = "canceled";
+      }
+    }
+
+    // Also check active promo-code redemption
+    if (!hasAccess) {
+      const { data: promo } = await supabase.rpc("user_active_promo", { _user_id: user.id });
+      const row = Array.isArray(promo) ? promo[0] : null;
+      if (row) {
+        hasAccess = true;
+        accessReason = "promo";
       }
     }
 
