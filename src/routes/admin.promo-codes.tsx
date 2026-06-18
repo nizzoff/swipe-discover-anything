@@ -62,11 +62,13 @@ function AdminPanel() {
   const invalidate = () => qc.invalidateQueries({ queryKey: ["promo-codes"] });
 
   const createM = useMutation({
-    mutationFn: (input: Parameters<typeof createFn>[0]["data"]) => createFn({ data: input }),
+    mutationFn: (input: Parameters<typeof createPromoCode>[0]["data"]) =>
+      createFn({ data: input }),
     onSuccess: invalidate,
   });
   const updateM = useMutation({
-    mutationFn: (input: Parameters<typeof updateFn>[0]["data"]) => updateFn({ data: input }),
+    mutationFn: (input: Parameters<typeof updatePromoCode>[0]["data"]) =>
+      updateFn({ data: input }),
     onSuccess: invalidate,
   });
   const deleteM = useMutation({
