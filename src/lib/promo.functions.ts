@@ -187,7 +187,14 @@ export const updatePromoCode = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      name?: string | null;
+      is_active?: boolean;
+      max_uses?: number | null;
+      expires_at?: string | null;
+      duration_days?: number | null;
+      access_tier?: "premium" | "premium_plus" | "beta";
+    } = {};
     if (data.name !== undefined) patch.name = data.name;
     if (data.isActive !== undefined) patch.is_active = data.isActive;
     if (data.maxUses !== undefined) patch.max_uses = data.maxUses;
