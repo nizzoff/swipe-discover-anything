@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { useSubscription, validatePromoCode, type PlanType } from "@/lib/use-subscription";
 import { redeemPromoCode } from "@/lib/promo.functions";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 const plans: { id: PlanType; name: string; price: string; period: string; badge?: string; features: string[]; popular?: boolean }[] = [
   {
