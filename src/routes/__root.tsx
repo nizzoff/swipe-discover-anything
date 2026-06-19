@@ -16,6 +16,12 @@ import { AuthProvider } from "../lib/auth-provider";
 import { ThemeProvider } from "../lib/theme-provider";
 
 function NotFoundComponent() {
+  useEffect(() => {
+    if (window.location.pathname === "/index") {
+      window.location.replace("/");
+    }
+  }, []);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
