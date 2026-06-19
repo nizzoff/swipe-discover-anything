@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
+  redirect,
   createRootRouteWithContext,
   useRouter,
   HeadContent,
@@ -76,6 +77,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: ({ location }) => {
+    if (location.pathname === "/index") {
+      throw redirect({ to: "/", replace: true });
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
