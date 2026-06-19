@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
+import { getSupabaseUrl } from "./supabase-config";
 
 export type PlanType = "monthly" | "annual" | "lifetime";
 export type SubscriptionStatus = "inactive" | "trialing" | "active" | "past_due" | "canceled";
@@ -26,7 +27,7 @@ interface SubscriptionInfo {
   error: string | null;
 }
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_URL = getSupabaseUrl();
 
 export function useSubscription(): SubscriptionInfo & {
   checkout: (planType: PlanType, promoCode?: string) => Promise<string | null>;
