@@ -22,6 +22,7 @@ export type Database = {
           created_by: string | null
           duration_days: number | null
           expires_at: string | null
+          grants_admin: boolean
           id: string
           is_active: boolean
           max_uses: number | null
@@ -36,6 +37,7 @@ export type Database = {
           created_by?: string | null
           duration_days?: number | null
           expires_at?: string | null
+          grants_admin?: boolean
           id?: string
           is_active?: boolean
           max_uses?: number | null
@@ -50,6 +52,7 @@ export type Database = {
           created_by?: string | null
           duration_days?: number | null
           expires_at?: string | null
+          grants_admin?: boolean
           id?: string
           is_active?: boolean
           max_uses?: number | null
