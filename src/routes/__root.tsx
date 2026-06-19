@@ -16,21 +16,11 @@ import { AuthProvider } from "../lib/auth-provider";
 import { ThemeProvider } from "../lib/theme-provider";
 
 function NotFoundComponent() {
-  const isLegacyIndex = typeof window !== "undefined" && window.location.pathname === "/index";
-
   useEffect(() => {
     if (window.location.pathname === "/index") {
       window.location.replace("/");
     }
   }, []);
-
-  if (isLegacyIndex) {
-    return (
-      <div className="grid min-h-screen place-items-center bg-background px-4 text-center text-sm text-muted-foreground">
-        Redirection...
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
