@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Switch } from "@/components/ui/switch";
 import { themes, useTheme, type Theme } from "@/lib/theme-provider";
 import { isAdmin } from "@/lib/promo.functions";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
 const languages = [
