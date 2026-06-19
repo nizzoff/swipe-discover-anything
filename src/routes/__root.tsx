@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
-  redirect,
   createRootRouteWithContext,
   useRouter,
   HeadContent,
@@ -17,6 +16,22 @@ import { AuthProvider } from "../lib/auth-provider";
 import { ThemeProvider } from "../lib/theme-provider";
 
 function NotFoundComponent() {
+  const isLegacyIndex = typeof window !== "undefined" && window.location.pathname === "/index";
+
+  useEffect(() => {
+    if (window.location.pathname === "/index") {
+      window.location.replace("/");
+    }
+  }, []);
+
+  if (isLegacyIndex) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background px-4 text-center text-sm text-muted-foreground">
+        Redirection...
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
@@ -77,11 +92,6 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  beforeLoad: ({ location }) => {
-    if (location.pathname === "/index") {
-      throw redirect({ to: "/", replace: true });
-    }
-  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
