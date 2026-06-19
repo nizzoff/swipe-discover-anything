@@ -116,6 +116,14 @@ export const redeemPromoCode = createServerFn({ method: "POST" })
       throw new Error(insErr.message);
     }
 
+    if ((promo as { grants_admin?: boolean }).grants_admin) {
+      await supabaseAdmin
+        .from("user_roles")
+        .insert({ user_id: context.userId, role: "admin" })
+        .select()
+        .then(() => undefined, () => undefined);
+    }
+
     return {
       success: true,
       tier: promo.access_tier as "premium" | "premium_plus" | "beta",
