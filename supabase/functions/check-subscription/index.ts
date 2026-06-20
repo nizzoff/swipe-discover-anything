@@ -43,14 +43,24 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const { data: subscription, error } = await supabase
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (error && error.code !== "PGRST116") {
-      throw error;
+    let subscription: {
+      plan_type?: string;
+      status?: string;
+      trial_ends_at?: string | null;
+      current_period_end?: string | null;
+      cancel_at_period_end?: boolean | null;
+    } | null = null;
+    {
+      const { data, error } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      // Table may not exist yet (PGRST205) — treat as "no subscription"
+      if (error && error.code !== "PGRST116" && error.code !== "PGRST205") {
+        throw error;
+      }
+      subscription = data ?? null;
     }
 
     const now = new Date();
