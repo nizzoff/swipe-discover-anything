@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Search } from "lucide-react";
-import { useState } from "react";
 import { SwipeItShell } from "@/components/swipeit-shell";
 import { PaywallGuard } from "@/components/paywall";
 import { categories } from "@/lib/swipeit-data";
@@ -18,42 +17,33 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [query, setQuery] = useState("");
   return (
     <PaywallGuard>
       <SwipeItShell wide>
         <header className="px-5 pt-10 sm:px-8 sm:pt-14">
-          <div className="animate-slide-up">
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
-              Bonjour Baptiste
-            </p>
-            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              SwipeIt<span className="text-primary">.</span>
-            </h1>
+          <div className="flex items-start justify-between gap-3 animate-slide-up">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                Bonjour Baptiste
+              </p>
+              <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+                SwipeIt<span className="text-primary">.</span>
+              </h1>
+            </div>
+            <Link
+              to="/search"
+              aria-label="Rechercher"
+              className="glass-subtle grid h-11 w-11 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:text-foreground hover:ring-2 hover:ring-primary/40"
+            >
+              <Search className="h-5 w-5" />
+            </Link>
           </div>
         </header>
 
         <main className="px-5 pt-6 sm:px-8">
-          {/* Search bar */}
-          <form
-            action="/search"
-            className="animate-slide-up glass-subtle flex items-center gap-3 rounded-2xl px-4 py-3 transition focus-within:ring-2 focus-within:ring-primary/40"
-            style={{ animationDelay: "0.05s" }}
-          >
-            <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
-            <input
-              type="search"
-              name="q"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Rechercher musique, films, jeux..."
-              className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-            />
-          </form>
-
           {/* Hero */}
           <h2
-            className="mt-8 text-balance font-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl animate-slide-up"
+            className="text-balance font-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl animate-slide-up"
             style={{ animationDelay: "0.1s" }}
           >
             Que veux-tu découvrir{" "}
