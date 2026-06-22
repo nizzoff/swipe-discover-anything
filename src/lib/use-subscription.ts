@@ -29,46 +29,19 @@ interface SubscriptionInfo {
 
 const SUPABASE_URL = getSupabaseUrl();
 
-// Session VIP override: by default the current session has full access.
-// Add `?paywall=1` to the URL to force the paywall, or `?paywall=0` to re-enable VIP.
-function isVipSession(): boolean {
-  if (typeof window === "undefined") return true;
-  const params = new URLSearchParams(window.location.search);
-  const force = params.get("paywall");
-  if (force === "1") {
-    sessionStorage.setItem("swipeit-vip", "0");
-    return false;
-  }
-  if (force === "0") {
-    sessionStorage.setItem("swipeit-vip", "1");
-    return true;
-  }
-  return sessionStorage.getItem("swipeit-vip") !== "0";
-}
-
 export function useSubscription(): SubscriptionInfo & {
   checkout: (planType: PlanType, promoCode?: string) => Promise<string | null>;
   refresh: () => Promise<void>;
 } {
   const [state, setState] = useState<SubscriptionInfo>({
-    hasAccess: isVipSession(),
-    accessReason: isVipSession() ? "promo" : "no_subscription",
+    hasAccess: false,
+    accessReason: "no_subscription",
     subscription: null,
-    loading: !isVipSession(),
+    loading: true,
     error: null,
   });
 
   const fetchSubscription = async () => {
-    if (isVipSession()) {
-      setState({
-        hasAccess: true,
-        accessReason: "promo",
-        subscription: null,
-        loading: false,
-        error: null,
-      });
-      return;
-    }
     try {
       const {
         data: { session },

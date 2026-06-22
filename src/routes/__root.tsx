@@ -14,7 +14,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SwipeItProvider } from "../lib/swipeit-store";
 import { AuthProvider } from "../lib/auth-provider";
 import { ThemeProvider } from "../lib/theme-provider";
-import { SplashScreen } from "../components/splash-screen";
 
 function NotFoundComponent() {
   useEffect(() => {
@@ -137,10 +136,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <SwipeItProvider>
-            <SplashScreen />
-            <Outlet />
-          </SwipeItProvider>
+          <SwipeItProvider><Outlet /></SwipeItProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
