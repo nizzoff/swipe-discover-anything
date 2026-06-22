@@ -20,13 +20,13 @@ export interface DiscoverItem {
 }
 
 export const categories: Array<{ key: CategoryKey; label: string; eyebrow: string; emoji: string; image: string }> = [
-  { key: "music", label: "Music", eyebrow: "Écouter", emoji: "♫", image: musicImage },
-  { key: "movies", label: "Movies", eyebrow: "Regarder", emoji: "▶", image: moviesImage },
-  { key: "food", label: "Food", eyebrow: "Déguster", emoji: "✦", image: foodImage },
-  { key: "activities", label: "Activities", eyebrow: "Vivre", emoji: "⌁", image: activitiesImage },
-  { key: "books", label: "Books", eyebrow: "Lire", emoji: "▤", image: booksImage },
-  { key: "games", label: "Games", eyebrow: "Jouer", emoji: "⌘", image: gamesImage },
-  { key: "travel", label: "Travel", eyebrow: "Explorer", emoji: "↗", image: travelImage },
+  { key: "music", label: "Musique", eyebrow: "Écouter", emoji: "♫", image: musicImage },
+  { key: "movies", label: "Films", eyebrow: "Regarder", emoji: "▶", image: moviesImage },
+  { key: "food", label: "Restaurants", eyebrow: "Déguster", emoji: "✦", image: foodImage },
+  { key: "activities", label: "Activités", eyebrow: "Vivre", emoji: "⌁", image: activitiesImage },
+  { key: "books", label: "Livres", eyebrow: "Lire", emoji: "▤", image: booksImage },
+  { key: "games", label: "Jeux", eyebrow: "Jouer", emoji: "⌘", image: gamesImage },
+  { key: "travel", label: "Voyages", eyebrow: "Explorer", emoji: "↗", image: travelImage },
 ];
 
 const names: Record<CategoryKey, string[]> = {

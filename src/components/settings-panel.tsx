@@ -11,7 +11,16 @@ import { useEffect, useState } from "react";
 const languages = [
   { code: "fr", name: "Français" },
   { code: "en", name: "English" },
-  { code: "es", name: "Espanol" },
+  { code: "es", name: "Español" },
+  { code: "zh", name: "中文" },
+  { code: "hi", name: "हिन्दी" },
+  { code: "ar", name: "العربية" },
+  { code: "pt", name: "Português" },
+  { code: "ru", name: "Русский" },
+  { code: "ja", name: "日本語" },
+  { code: "de", name: "Deutsch" },
+  { code: "it", name: "Italiano" },
+  { code: "ko", name: "한국어" },
 ];
 
 export function SettingsPanel() {
