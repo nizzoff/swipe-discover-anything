@@ -19,6 +19,7 @@ import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SwipeCategoryRouteImport } from './routes/swipe.$category'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminPromoCodesRouteImport } from './routes/admin.promo-codes'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -71,6 +72,11 @@ const SwipeCategoryRoute = SwipeCategoryRouteImport.update({
   path: '/swipe/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPromoCodesRoute = AdminPromoCodesRouteImport.update({
   id: '/admin/promo-codes',
   path: '/admin/promo-codes',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
   '/admin/promo-codes': typeof AdminPromoCodesRoute
+  '/api/chat': typeof ApiChatRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
   '/admin/promo-codes': typeof AdminPromoCodesRoute
+  '/api/chat': typeof ApiChatRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
   '/admin/promo-codes': typeof AdminPromoCodesRoute
+  '/api/chat': typeof ApiChatRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/welcome'
     | '/admin/promo-codes'
+    | '/api/chat'
     | '/swipe/$category'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/welcome'
     | '/admin/promo-codes'
+    | '/api/chat'
     | '/swipe/$category'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/welcome'
     | '/admin/promo-codes'
+    | '/api/chat'
     | '/swipe/$category'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   StatsRoute: typeof StatsRoute
   WelcomeRoute: typeof WelcomeRoute
   AdminPromoCodesRoute: typeof AdminPromoCodesRoute
+  ApiChatRoute: typeof ApiChatRoute
   SwipeCategoryRoute: typeof SwipeCategoryRoute
 }
 
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SwipeCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/promo-codes': {
       id: '/admin/promo-codes'
       path: '/admin/promo-codes'
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   StatsRoute: StatsRoute,
   WelcomeRoute: WelcomeRoute,
   AdminPromoCodesRoute: AdminPromoCodesRoute,
+  ApiChatRoute: ApiChatRoute,
   SwipeCategoryRoute: SwipeCategoryRoute,
 }
 export const routeTree = rootRouteImport
