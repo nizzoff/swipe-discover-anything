@@ -13,6 +13,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as PulseRouteImport } from './routes/pulse'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as FavoritesRouteImport } from './routes/favorites'
@@ -40,6 +41,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PulseRoute = PulseRouteImport.update({
+  id: '/pulse',
+  path: '/pulse',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/pulse': typeof PulseRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/pulse': typeof PulseRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/pulse': typeof PulseRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/premium'
     | '/profile'
+    | '/pulse'
     | '/search'
     | '/sitemap.xml'
     | '/stats'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/premium'
     | '/profile'
+    | '/pulse'
     | '/search'
     | '/sitemap.xml'
     | '/stats'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/premium'
     | '/profile'
+    | '/pulse'
     | '/search'
     | '/sitemap.xml'
     | '/stats'
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   FavoritesRoute: typeof FavoritesRoute
   PremiumRoute: typeof PremiumRoute
   ProfileRoute: typeof ProfileRoute
+  PulseRoute: typeof PulseRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StatsRoute: typeof StatsRoute
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pulse': {
+      id: '/pulse'
+      path: '/pulse'
+      fullPath: '/pulse'
+      preLoaderRoute: typeof PulseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -281,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   FavoritesRoute: FavoritesRoute,
   PremiumRoute: PremiumRoute,
   ProfileRoute: ProfileRoute,
+  PulseRoute: PulseRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StatsRoute: StatsRoute,
@@ -292,3 +313,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
