@@ -13,12 +13,14 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as PulseRouteImport } from './routes/pulse'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SwipeCategoryRouteImport } from './routes/swipe.$category'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminPromoCodesRouteImport } from './routes/admin.promo-codes'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -39,6 +41,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PulseRoute = PulseRouteImport.update({
+  id: '/pulse',
+  path: '/pulse',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -71,6 +78,11 @@ const SwipeCategoryRoute = SwipeCategoryRouteImport.update({
   path: '/swipe/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPromoCodesRoute = AdminPromoCodesRouteImport.update({
   id: '/admin/promo-codes',
   path: '/admin/promo-codes',
@@ -83,11 +95,13 @@ export interface FileRoutesByFullPath {
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/pulse': typeof PulseRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
   '/admin/promo-codes': typeof AdminPromoCodesRoute
+  '/api/chat': typeof ApiChatRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesByTo {
@@ -96,11 +110,13 @@ export interface FileRoutesByTo {
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/pulse': typeof PulseRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
   '/admin/promo-codes': typeof AdminPromoCodesRoute
+  '/api/chat': typeof ApiChatRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRoutesById {
@@ -110,11 +126,13 @@ export interface FileRoutesById {
   '/favorites': typeof FavoritesRoute
   '/premium': typeof PremiumRoute
   '/profile': typeof ProfileRoute
+  '/pulse': typeof PulseRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stats': typeof StatsRoute
   '/welcome': typeof WelcomeRoute
   '/admin/promo-codes': typeof AdminPromoCodesRoute
+  '/api/chat': typeof ApiChatRoute
   '/swipe/$category': typeof SwipeCategoryRoute
 }
 export interface FileRouteTypes {
@@ -125,11 +143,13 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/premium'
     | '/profile'
+    | '/pulse'
     | '/search'
     | '/sitemap.xml'
     | '/stats'
     | '/welcome'
     | '/admin/promo-codes'
+    | '/api/chat'
     | '/swipe/$category'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -138,11 +158,13 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/premium'
     | '/profile'
+    | '/pulse'
     | '/search'
     | '/sitemap.xml'
     | '/stats'
     | '/welcome'
     | '/admin/promo-codes'
+    | '/api/chat'
     | '/swipe/$category'
   id:
     | '__root__'
@@ -151,11 +173,13 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/premium'
     | '/profile'
+    | '/pulse'
     | '/search'
     | '/sitemap.xml'
     | '/stats'
     | '/welcome'
     | '/admin/promo-codes'
+    | '/api/chat'
     | '/swipe/$category'
   fileRoutesById: FileRoutesById
 }
@@ -165,11 +189,13 @@ export interface RootRouteChildren {
   FavoritesRoute: typeof FavoritesRoute
   PremiumRoute: typeof PremiumRoute
   ProfileRoute: typeof ProfileRoute
+  PulseRoute: typeof PulseRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StatsRoute: typeof StatsRoute
   WelcomeRoute: typeof WelcomeRoute
   AdminPromoCodesRoute: typeof AdminPromoCodesRoute
+  ApiChatRoute: typeof ApiChatRoute
   SwipeCategoryRoute: typeof SwipeCategoryRoute
 }
 
@@ -201,6 +227,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pulse': {
+      id: '/pulse'
+      path: '/pulse'
+      fullPath: '/pulse'
+      preLoaderRoute: typeof PulseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -245,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SwipeCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/promo-codes': {
       id: '/admin/promo-codes'
       path: '/admin/promo-codes'
@@ -261,11 +301,13 @@ const rootRouteChildren: RootRouteChildren = {
   FavoritesRoute: FavoritesRoute,
   PremiumRoute: PremiumRoute,
   ProfileRoute: ProfileRoute,
+  PulseRoute: PulseRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StatsRoute: StatsRoute,
   WelcomeRoute: WelcomeRoute,
   AdminPromoCodesRoute: AdminPromoCodesRoute,
+  ApiChatRoute: ApiChatRoute,
   SwipeCategoryRoute: SwipeCategoryRoute,
 }
 export const routeTree = rootRouteImport

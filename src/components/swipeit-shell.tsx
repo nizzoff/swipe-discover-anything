@@ -1,12 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChartBar, Heart, Home, User } from "lucide-react";
+import { ChartBar, Heart, Home } from "lucide-react";
 import type { ReactNode } from "react";
+import { PulseLogo } from "@/components/pulse-logo";
 
 const nav = [
   { to: "/", label: "Accueil", icon: Home },
   { to: "/favorites", label: "Favoris", icon: Heart },
   { to: "/stats", label: "Stats", icon: ChartBar },
-  { to: "/profile", label: "Profil", icon: User },
+  { to: "/pulse", label: "Pulse", icon: PulseLogo },
 ] as const;
 
 export function SwipeItShell({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
