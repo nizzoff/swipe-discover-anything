@@ -67,12 +67,12 @@ function PulsePage() {
         <div className="flex min-h-screen flex-col px-4 pt-10 pb-40 sm:px-6">
           {/* Header */}
           <header className="flex items-center gap-3 animate-slide-up">
-            <div className="grid h-11 w-11 place-items-center rounded-full bg-white/10 ring-1 ring-white/20 backdrop-blur">
-              <PulseLogo className="h-6 w-6 text-white" />
-            </div>
+            <PulseLogo variant="3d" animated={isLoading} className="h-12 w-12 drop-shadow-[0_6px_20px_rgba(168,85,247,0.55)]" />
             <div className="min-w-0">
               <h1 className="font-display text-2xl font-bold tracking-tight text-white">Pulse</h1>
-              <p className="text-xs text-white/60">Votre guide de découverte · en ligne</p>
+              <p className="text-xs text-white/60">
+                {isLoading ? "Pulse réfléchit…" : "Votre guide de découverte · en ligne"}
+              </p>
             </div>
           </header>
 
@@ -80,9 +80,11 @@ function PulsePage() {
           <div ref={scrollerRef} className="mt-6 flex-1 space-y-4 overflow-y-auto">
             {messages.length === 0 && (
               <div className="mx-auto max-w-md pt-10 text-center animate-fade-in">
-                <div className="mx-auto grid h-20 w-20 place-items-center rounded-3xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-                  <PulseLogo className="h-10 w-10 text-white animate-pulse-soft" />
-                </div>
+                <PulseLogo
+                  variant="3d"
+                  animated
+                  className="mx-auto h-28 w-28 drop-shadow-[0_10px_40px_rgba(168,85,247,0.6)]"
+                />
                 <h2 className="mt-5 font-display text-3xl font-bold tracking-tight text-white">
                   New way to discover.
                 </h2>
@@ -109,15 +111,19 @@ function PulsePage() {
                 .map((p) => (p.type === "text" ? p.text : ""))
                 .join("");
               const isUser = m.role === "user";
+              const isLast = m.id === messages[messages.length - 1]?.id;
+              const assistantStreaming = !isUser && isLast && status === "streaming";
               return (
                 <div
                   key={m.id}
                   className={`flex gap-2 animate-slide-up ${isUser ? "justify-end" : "justify-start"}`}
                 >
                   {!isUser && (
-                    <div className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/10 ring-1 ring-white/20">
-                      <PulseLogo className="h-4 w-4 text-white" />
-                    </div>
+                    <PulseLogo
+                      variant="3d"
+                      animated={assistantStreaming}
+                      className="mt-1 h-8 w-8 shrink-0 drop-shadow-[0_3px_10px_rgba(168,85,247,0.5)]"
+                    />
                   )}
                   <div
                     className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
@@ -140,9 +146,11 @@ function PulsePage() {
 
             {status === "submitted" && (
               <div className="flex gap-2 animate-fade-in">
-                <div className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/10 ring-1 ring-white/20">
-                  <PulseLogo className="h-4 w-4 text-white" />
-                </div>
+                <PulseLogo
+                  variant="3d"
+                  animated
+                  className="mt-1 h-8 w-8 shrink-0 drop-shadow-[0_3px_10px_rgba(168,85,247,0.5)]"
+                />
                 <div className="flex items-center gap-1 rounded-2xl bg-white/10 px-4 py-3 ring-1 ring-white/15 backdrop-blur">
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/70 [animation-delay:-0.3s]" />
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/70 [animation-delay:-0.15s]" />

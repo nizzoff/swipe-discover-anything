@@ -13,7 +13,7 @@ const nav = [
 export function SwipeItShell({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   const path = useRouterState({ select: (state) => state.location.pathname });
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
+    <div className="relative min-h-screen overflow-x-hidden text-foreground">
       {/* Ambient glow effects */}
       <div className="pointer-events-none fixed -right-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-[100px]" />
       <div className="pointer-events-none fixed -left-32 top-1/2 h-72 w-72 rounded-full bg-primary/8 blur-[80px]" />
